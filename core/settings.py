@@ -2,7 +2,6 @@ from pathlib import Path
 from decouple import config
 from django.conf.global_settings import MEDIA_URL, MEDIA_ROOT, AUTH_USER_MODEL, EMAIL_BACKEND
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 ALLOWED_HOSTS = []
 SECRET_KEY = config('SECRET_KEY')
@@ -35,14 +34,13 @@ LOCAL_APPS = [
 INSTALLED_APPS +=LOCAL_APPS
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
-    ),
-    'DEFAULT_PERMISSIONS_CLASSES': (
+    ],
+    'DEFAULT_PERMISSIONS_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    )
+]
 }
 
 
@@ -184,3 +182,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+
+
+# CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:3000"]
+
+
+CSRF_TRUSTED_ORIGINS = ['http://*', 'https://*']
+ALLOWED_ORIGINS = CSRF_TRUSTED_ORIGINS.copy()

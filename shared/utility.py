@@ -9,7 +9,8 @@ from django.template.loader import render_to_string
 from rest_framework.exceptions import ValidationError
 
 email_regex = re.compile(r"[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+")
-# phone_regex = re.compile(r"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$")
+phone_regex = re.compile(r"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$")
+username_regex = re.compile(r"[a-zA-Z0-9]+(._)?")
 
 def check_email_or_phone(email_or_phone):
     # phone_number = phonenumbers.parse(email_or_phone)
@@ -28,6 +29,22 @@ def check_email_or_phone(email_or_phone):
 
     return email_or_phone
 
+
+def check_user_type(user_input):
+    if re.fullmatch(email_regex, user_input):
+        user_input = "email"
+
+    elif re.fullmatch(phone_regex,user_input):
+        user_input = "phone"
+    elif re.fullmatch(username_regex,user_input):
+        user_input = "username"
+    else:
+        data = {
+            "success":False,
+            "message":"Siz faqat email,username va tel raqam kiritolasiz!"
+        }
+        raise ValidationError(data)
+    return user_input
 
 class EmailThread(threading.Thread):
     def __init__(self, email):
